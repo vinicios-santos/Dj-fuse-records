@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de CDs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciador de CDs</h1>
+        
+        <div class="file-actions">
+            <button id="exportBtn" class="file-btn">Exportar Dados</button>
+            <input type="file" id="importFile" accept=".txt" style="display: none">
+            <button id="importBtn" class="file-btn">Importar Dados</button>
+        </div>
+        
+        <form id="cdForm">
+            <div class="form-group">
+                <label for="title">Título *</label>
+                <input type="text" id="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="author">Autor</label>
+                <input type="text" id="author">
+            </div>
+            
+            <div class="form-group">
+                <label for="duration">Duração (minutos)</label>
+                <input type="number" id="duration" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="genre">Gênero</label>
+                <input type="text" id="genre">
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Preço (R$)</label>
+                <input type="number" id="price" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="favorite">
+                    <input type="checkbox" id="favorite">
+                    Favorito
+                </label>
+            </div>
+            
+            <button type="submit">Adicionar CD</button>
+        </form>
+        
+        <div class="cd-list">
+            <div class="cd-list-header">
+                <h2>Lista de CDs</h2>
+                <div class="cd-counter">
+                    Total de CDs: <span id="cdCount">0</span>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar por título, autor ou gênero...">
+            </div>
+            <table id="cdTable">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Duração</th>
+                        <th>Gênero</th>
+                        <th>Preço</th>
+                        <th>Favorito</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="cdTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
