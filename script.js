@@ -3,8 +3,10 @@ class CDManager {
     constructor() {
         this.cds = [];
         this.searchTerm = '';
+        this.showOnlyDuplicates = false;
         this.loadCDs();
         this.setupSearch();
+        this.setupDuplicateFilter();
     }
 
     // Configura o campo de busca
@@ -12,6 +14,17 @@ class CDManager {
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', (e) => {
             this.searchTerm = e.target.value.toLowerCase();
+            this.renderCDs();
+        });
+    }
+
+    // Configura o botão de filtro de duplicados
+    setupDuplicateFilter() {
+        const filterBtn = document.getElementById('showDuplicatesBtn');
+        filterBtn.addEventListener('click', () => {
+            this.showOnlyDuplicates = !this.showOnlyDuplicates;
+            filterBtn.classList.toggle('active');
+            filterBtn.textContent = this.showOnlyDuplicates ? 'Mostrar Todos' : 'Mostrar Duplicados';
             this.renderCDs();
         });
     }
@@ -91,21 +104,37 @@ class CDManager {
         document.getElementById('cdCount').textContent = filteredCDs.length;
     }
 
-    // Filtra os CDs com base no termo de busca
+    // Verifica se um CD é duplicado
+    isDuplicate(cd, index) {
+        return this.cds.some((otherCd, otherIndex) => {
+            if (index === otherIndex) return false;
+            return cd.title === otherCd.title;
+        });
+    }
+
+    // Filtra os CDs com base no termo de busca e duplicados
     filterCDs() {
-        if (!this.searchTerm) {
-            return this.cds;
+        let filteredCDs = this.cds;
+
+        // Aplica o filtro de busca
+        if (this.searchTerm) {
+            filteredCDs = filteredCDs.filter(cd => {
+                const title = cd.title.toLowerCase();
+                const author = (cd.author || '').toLowerCase();
+                const genre = (cd.genre || '').toLowerCase();
+
+                return title.includes(this.searchTerm) ||
+                       author.includes(this.searchTerm) ||
+                       genre.includes(this.searchTerm);
+            });
         }
 
-        return this.cds.filter(cd => {
-            const title = cd.title.toLowerCase();
-            const author = (cd.author || '').toLowerCase();
-            const genre = (cd.genre || '').toLowerCase();
+        // Aplica o filtro de duplicados
+        if (this.showOnlyDuplicates) {
+            filteredCDs = filteredCDs.filter((cd, index) => this.isDuplicate(cd, index));
+        }
 
-            return title.includes(this.searchTerm) ||
-                   author.includes(this.searchTerm) ||
-                   genre.includes(this.searchTerm);
-        });
+        return filteredCDs;
     }
 
     // Renderiza a lista de CDs na tabela
@@ -121,6 +150,11 @@ class CDManager {
 
         sortedCDs.forEach((cd, index) => {
             const tr = document.createElement('tr');
+            const isDuplicate = this.isDuplicate(cd, this.cds.indexOf(cd));
+            if (isDuplicate) {
+                tr.classList.add('duplicate');
+            }
+
             tr.innerHTML = `
                 <td>${cd.title}</td>
                 <td>${cd.author || '-'}</td>
